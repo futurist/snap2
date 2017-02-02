@@ -220,7 +220,7 @@ namespace snap2
             {
 
                 //Allow 250 milliseconds for the screen to repaint itself (we don't want to include this form in the capture)
-                System.Threading.Thread.Sleep(100);
+                System.Threading.Thread.Sleep(10);
 
                 Point StartPoint = new Point(CurrentTopLeft.X, CurrentTopLeft.Y);
                 Rectangle bounds = new Rectangle(CurrentTopLeft.X, CurrentTopLeft.Y, CurrentBottomRight.X - CurrentTopLeft.X, CurrentBottomRight.Y - CurrentTopLeft.Y);
@@ -314,7 +314,7 @@ namespace snap2
             RectangleDrawn = true;
             LeftButtonDown = false;
             CurrentAction = ClickAction.NoClick;
-
+            SaveSelection(false);
         }
         #endregion
 
