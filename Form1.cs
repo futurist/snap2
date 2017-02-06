@@ -256,17 +256,17 @@ namespace snap2
         public void key_press(object sender, KeyEventArgs e)
         {
 
-            if (!RectangleDrawn) return;
-            if (e.KeyCode == Keys.S)
-            {
-
-                SaveSelection(true);
-
-            }
             if (e.KeyCode == Keys.Space)
             {
-
+                CurrentTopLeft = Point.Empty;
+                CurrentBottomRight.X = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Width;
+                CurrentBottomRight.Y = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Height;
                 SaveSelection(false);
+
+            }
+            if (e.KeyCode == Keys.Enter)
+            {
+                //SaveSelection(false);
 
             }
 
