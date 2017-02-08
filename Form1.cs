@@ -174,7 +174,21 @@ namespace snap2
         }
         #endregion
 
+        public void LoadCoordFromFile(string file)
+        {
+            string[] coords = File.ReadAllText(file).Split(',');
+            CurrentTopLeft.X = int.Parse(coords[0]);
+            CurrentTopLeft.Y = int.Parse(coords[1]);
 
+            CurrentBottomRight.X = int.Parse(coords[2]);
+            CurrentBottomRight.Y = int.Parse(coords[3]);
+        }
+
+        public void SaveCoordToFile(string file)
+        {
+            string[] coords = { CurrentTopLeft.X.ToString(), CurrentTopLeft.Y.ToString(), CurrentBottomRight.X.ToString(), CurrentBottomRight.Y.ToString() };
+            File.WriteAllText(file, string.Join(",", coords));
+        }
 
         public void SaveSelection(bool showCursor)
         {
@@ -193,18 +207,12 @@ namespace snap2
             if (isReplay)
             {
 
-                string[] coords = File.ReadAllText(coordFile).Split(',');
-                CurrentTopLeft.X = int.Parse(coords[0]);
-                CurrentTopLeft.Y = int.Parse(coords[1]);
-
-                CurrentBottomRight.X = int.Parse(coords[2]);
-                CurrentBottomRight.Y = int.Parse(coords[3]);
+                LoadCoordFromFile(coordFile);
 
             }
             else
             {
-                string[] coords = { CurrentTopLeft.X.ToString(), CurrentTopLeft.Y.ToString(), CurrentBottomRight.X.ToString(), CurrentBottomRight.Y.ToString() };
-                File.WriteAllText(capFolder+newName+".txt", string.Join(",", coords) );
+                SaveCoordToFile(capFolder + newName + ".txt");
             }
 
 
@@ -235,6 +243,7 @@ namespace snap2
 
                 ScreenShot.CaptureImage(showCursor, curSize, curPos, StartPoint, Point.Empty, bounds, ScreenPath, fi);
 
+                SaveCoordToFile("last_snap.txt");
 
                 if (this.InstanceRef != null) this.InstanceRef.Show();
                 this.Close();
@@ -256,17 +265,21 @@ namespace snap2
         public void key_press(object sender, KeyEventArgs e)
         {
 
-            if (e.KeyCode == Keys.Space)
+            if (e.KeyCode == Keys.Enter)
             {
+                // Enter: full screen
                 CurrentTopLeft = Point.Empty;
                 CurrentBottomRight.X = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Width;
                 CurrentBottomRight.Y = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Size.Height;
                 SaveSelection(false);
 
             }
-            if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Space)
             {
-                //SaveSelection(false);
+                // Space: last time
+
+                LoadCoordFromFile("last_snap.txt");
+                SaveSelection(false);
 
             }
 
