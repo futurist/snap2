@@ -17,6 +17,9 @@ namespace snap2
     public partial class Form1 : Form
     {
         string capFolder = @"data\";
+        string lastFileName = @"last_snap.txt";
+
+
         string newName;
         string coordFile;
         StringBuilder strOut = new StringBuilder();
@@ -171,6 +174,8 @@ namespace snap2
             this.KeyUp += new KeyEventHandler(key_press);
             g = this.CreateGraphics();
 
+            
+
         }
         #endregion
 
@@ -193,6 +198,15 @@ namespace snap2
         public void SaveSelection(bool showCursor)
         {
             this.Hide();
+
+            RectangleHeight = CurrentBottomRight.Y - CurrentTopLeft.Y;
+            RectangleWidth = CurrentBottomRight.X - CurrentTopLeft.X;
+
+            if (RectangleWidth <= 0 || RectangleHeight <= 0)
+            {
+                this.Close();
+                return;
+            }
 
             Point curPos = new Point(Cursor.Position.X - CurrentTopLeft.X, Cursor.Position.Y - CurrentTopLeft.Y);
             Size curSize = new Size();
@@ -243,7 +257,7 @@ namespace snap2
 
                 ScreenShot.CaptureImage(showCursor, curSize, curPos, StartPoint, Point.Empty, bounds, ScreenPath, fi);
 
-                SaveCoordToFile("last_snap.txt");
+                SaveCoordToFile(lastFileName);
 
                 if (this.InstanceRef != null) this.InstanceRef.Show();
                 this.Close();
@@ -278,7 +292,7 @@ namespace snap2
             {
                 // Space: last time
 
-                LoadCoordFromFile("last_snap.txt");
+                
                 SaveSelection(false);
 
             }
@@ -717,6 +731,21 @@ namespace snap2
         private void Form1_Load(object sender, EventArgs e)
         {
 
+           
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            if (File.Exists(lastFileName))
+            {
+                LoadCoordFromFile(lastFileName);
+                RectangleHeight = CurrentBottomRight.Y - CurrentTopLeft.Y;
+                RectangleWidth = CurrentBottomRight.X - CurrentTopLeft.X;
+
+                //RectangleDrawn = true;
+
+                g.DrawRectangle(MyPen, CurrentTopLeft.X, CurrentTopLeft.Y, RectangleWidth, RectangleHeight);
+            }
         }
 
     }
