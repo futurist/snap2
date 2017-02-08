@@ -278,6 +278,10 @@ namespace snap2
 
         public void key_press(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
 
             if (e.KeyCode == Keys.Enter)
             {
